@@ -1,19 +1,27 @@
-var canvas, height, width, ctx;
+var canvas, height, width, ctx, evt;
 var pipes;
 
 
-
+function onpress(evt){
+    var rect = canvas.getBoundingClientRect();
+    if((evt.x > rect.left && evt.x < rect.right) && (evt.y > rect.top)  && (evt.y < rect.bottom)){
+      console.log("canvas");
+    }else{
+      console.log("not canvas");
+    }
+}
 function main() {
     canvas = document.createElement("canvas");
     width = window.innerWidth;
     height = window.innerHeight;
-
+    var evt = "touchstart";
     if(width >= 500){
         width  = 320;
-		height = 512;
-		canvas.style.border = "1px solid #000";
+	      height = 512;
+	      canvas.style.border = "1px solid #000";
+        evt = "mousedown";
     }
-
+    document.addEventListener(evt, onpress);
     canvas.width = width;
     canvas.height = height;
     ctx = canvas.getContext("2d");
