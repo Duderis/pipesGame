@@ -67,19 +67,24 @@ function Pipe(x,y,spriteNum,state){
     this.accept();
 }
 
-Pipe.prototype.draw = function(ctx,fc){
-    this.sprite.draw(ctx, this.x, this.y, this.rotation, fc);
+Pipe.prototype.draw = function(ctx,fc,mY){
+    this.sprite.draw(ctx, this.x, this.y, this.rotation, fc, mY);
 }
-Pipe.prototype.rotate = function(degree){
-    this.rotationLeft = degree;
+Pipe.prototype.rotate = function(){
+    this.rotationLeft += 90;
 }
 Pipe.prototype.update = function(){
+    var newState = this.state;
     if(this.rotationLeft!=0){
         this.rotation += 5;
         this.rotationLeft -= 5;
         if(this.rotation == 360){
             this.rotation = 0;
         }
-        this.state = this.rotation/90;
+        newState = Math.floor(this.rotation/90);
+    }
+    if(newState != this.state){
+        this.state = newState;
+        this.accept();
     }
 }

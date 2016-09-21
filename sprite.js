@@ -7,9 +7,9 @@ function Sprite(img, x, y, width, height) {
     this.height = height;
 }
 
-Sprite.prototype.draw = function(ctx, x, y, rotation, fc){
+Sprite.prototype.draw = function(ctx, x, y, rotation, fc, mY){
     var X = x*(fc*100);
-    var Y = y*(fc*100);
+    var Y = y*(fc*100)+mY;
     ctx.save();
     ctx.translate(X+this.width*fc/2,Y+this.height*fc/2)
     ctx.rotate(rotation*Math.PI/180);
