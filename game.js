@@ -1,18 +1,24 @@
-var canvas, height, width, ctx, evt, factor, gridSize, marginY;
+var canvas, height, width, ctx, evt, factor, gridSize, marginY, timeStamp;
 var pipes;
 
 
 function onpress(evt){
     var rect = canvas.getBoundingClientRect();
     if((evt.x > rect.left && evt.x < rect.right) && (evt.y > rect.top)  && (evt.y < rect.bottom)){
-        var x = evt.x-(Math.floor(rect.left));
-        var y = evt.y-(Math.floor(rect.top))-marginY;
-        x = Math.floor(x/factor); y=Math.floor(y/factor);
-        pipes[x][y].rotate();
+        var X = evt.x-(Math.floor(rect.left));
+        var Y = evt.y-(Math.floor(rect.top));
+        var x = Math.floor(X/factor); var y = Math.floor((Y-marginY)/factor);
+        if(Y>marginY&&Y<(Math.floor(rect.bottom))-marginY*2){
+            pipes[x][y].rotate();
+            pipes[x][y].check();
+            console.log(pipes[x][y].checkArround());
+        }
     }
+
 }
 function main() {
     canvas = document.createElement("canvas");
+    timeStamp = 0;
     gridSize = 5;
     width = window.innerWidth;
     height = window.innerHeight;
@@ -66,6 +72,12 @@ function update(){
         for(y = 0; y < pipes[x].length; y++){
             pipes[x][y].update();
         }
+    }
+    var d = new Date();
+    var secs = d.getSeconds();
+    var incrSecs = 1;
+    if(secs >= timeStamp && (!((secs+incrSecs)>=60)||((timeStamp+incrSecs)>=60))){
+        timeStamp = (secs+incrSecs)%60;
     }
 }
 

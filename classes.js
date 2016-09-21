@@ -32,32 +32,32 @@ function Pipe(x,y,spriteNum,state){
         switch(this.spriteNum){
             case 0:{
                 switch(this.state){
-                    case 0: {accepts = [{x:"x",y:"y-1"},{x:"x",y:"y+1"}]; break;}
-                    case 1: {accepts = [{x:"x+1",y:"y"},{x:"x-1",y:"y"}]; break;}
-                    case 2: {accepts = [{x:"x",y:"y-1"},{x:"x",y:"y+1"}]; break;}
-                    case 3: {accepts = [{x:"x+1",y:"y"},{x:"x-1",y:"y"}]; break;}
+                    case 0: {accepts = [{x:this.x,y:this.y-1},{x:this.x,y:this.y+1}]; break;}
+                    case 1: {accepts = [{x:this.x+1,y:this.y},{x:this.x-1,y:this.y}]; break;}
+                    case 2: {accepts = [{x:this.x,y:this.y-1},{x:this.x,y:this.y+1}]; break;}
+                    case 3: {accepts = [{x:this.x+1,y:this.y},{x:this.x-1,y:this.y}]; break;}
                 }
                 break;
             }
             case 1:{
                 switch(this.state){
-                    case 0: {accepts = [{x:"x",y:"y-1"},{x:"x",y:"y+1"},{x:"x+1",y:"y"}]; break;}
-                    case 1: {accepts = [{x:"x+1",y:"y"},{x:"x-1",y:"y"},{x:"x",y:"y+1"}]; break;}
-                    case 2: {accepts = [{x:"x",y:"y-1"},{x:"x",y:"y+1"},{x:"x-1",y:"y"}]; break;}
-                    case 3: {accepts = [{x:"x+1",y:"y"},{x:"x-1",y:"y"},{x:"x",y:"y-1"}]; break;}
+                    case 0: {accepts = [{x:this.x,y:this.y-1},{x:this.x,y:this.y+1},{x:this.x+1,y:this.y}]; break;}
+                    case 1: {accepts = [{x:this.x+1,y:this.y},{x:this.x-1,y:this.y},{x:this.x,y:this.y+1}]; break;}
+                    case 2: {accepts = [{x:this.x,y:this.y-1},{x:this.x,y:this.y+1},{x:this.x-1,y:this.y}]; break;}
+                    case 3: {accepts = [{x:this.x+1,y:this.y},{x:this.x-1,y:this.y},{x:this.x,y:this.y-1}]; break;}
                 }
                 break;
             }
             case 2:{
-                accepts = [{x:"x",y:"y-1"},{x:"x",y:"y+1"},{x:"x+1",y:"y"},{x:"x-1",y:"y"}];
+                accepts = [{x:this.x,y:this.y-1},{x:this.x,y:this.y+1},{x:this.x+1,y:this.y},{x:this.x-1,y:this.y}];
                 break;
             }
             case 3:{
                 switch(this.state){
-                    case 0: {accepts = [{x:"x",y:"y+1"},{x:"x+1",y:"y"}]; break;}
-                    case 1: {accepts = [{x:"x",y:"y+1"},{x:"x-1",y:"y"}]; break;}
-                    case 2: {accepts = [{x:"x",y:"y-1"},{x:"x-1",y:"y"}]; break;}
-                    case 3: {accepts = [{x:"x",y:"y+1"},{x:"x+1",y:"y"}]; break;}
+                    case 0: {accepts = [{x:this.x,y:this.y+1},{x:this.x+1,y:this.y}]; break;}
+                    case 1: {accepts = [{x:this.x,y:this.y+1},{x:this.x-1,y:this.y}]; break;}
+                    case 2: {accepts = [{x:this.x,y:this.y-1},{x:this.x-1,y:this.y}]; break;}
+                    case 3: {accepts = [{x:this.x,y:this.y+1},{x:this.x+1,y:this.y}]; break;}
                 }
                 break;
             }
@@ -87,4 +87,28 @@ Pipe.prototype.update = function(){
         this.state = newState;
         this.accept();
     }
+}
+Pipe.prototype.checkArround = function(){
+    var candidates = [];
+    for(var i in this.accepts){
+        if(this.accepts[i].x>=0 && this.accepts[i].x<pipes.length){
+            if(this.accepts[i].y>=0 && this.accepts[i].y<pipes[this.accepts[i].x].length){
+                if(pipes[this.accepts[i].x][this.accepts[i].y].check){
+                    candidates.push( this.accepts[i] );
+                }
+            }
+        }
+    }
+    return candidates;
+}
+Pipe.prototype.check = function(otherX, otherY){
+    if(this.filled || otherX<0 || otherY<0){
+        return false;
+    }
+    for(var i in this.accepts){
+        if(this.accepts[i].x==otherX && this.accepts[i].y==otherY){
+            return true;
+        }
+    }
+    return false;
 }
