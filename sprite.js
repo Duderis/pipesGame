@@ -7,9 +7,14 @@ function Sprite(img, x, y, width, height) {
     this.height = height;
 }
 
-Sprite.prototype.draw = function(ctx, x, y, rotation, fc, mY){
+Sprite.prototype.draw = function(ctx, x, y, rotation, fc, mY, filled){
     var X = x*(fc*100);
     var Y = y*(fc*100)+mY;
+    if(filled){
+        ctx.globalAlpha=0.2;
+        ctx.fillRect(X,Y,this.width*fc,this.height*fc);
+        ctx.globalAlpha=1;
+    }
     ctx.save();
     ctx.translate(X+this.width*fc/2,Y+this.height*fc/2)
     ctx.rotate(rotation*Math.PI/180);
@@ -22,6 +27,8 @@ function initSprites(img) {
         new Sprite(img, 0, 0, 100, 100),
         new Sprite(img, 0, 100, 100, 100),
         new Sprite(img, 0, 200, 100, 100),
-        new Sprite(img, 0, 300, 100, 100)
+        new Sprite(img, 0, 300, 100, 100),
+        new Sprite(img, 0, 400, 100, 100)
     ];
+    s_pipe.color = "#70C5CF";
 }

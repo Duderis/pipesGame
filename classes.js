@@ -1,6 +1,6 @@
 
-function Pipe(x,y,spriteNum,state){
-    this.filled = false;
+function Pipe(x,y,spriteNum,state,filled = false){
+    this.filled = filled;
     this.x = x;
     this.y = y;
     this.spriteNum = spriteNum;
@@ -54,12 +54,20 @@ function Pipe(x,y,spriteNum,state){
             }
             case 3:{
                 switch(this.state){
-                    case 0: {accepts = [{x:this.x,y:this.y+1},{x:this.x+1,y:this.y}]; break;}
-                    case 1: {accepts = [{x:this.x,y:this.y+1},{x:this.x-1,y:this.y}]; break;}
-                    case 2: {accepts = [{x:this.x,y:this.y-1},{x:this.x-1,y:this.y}]; break;}
-                    case 3: {accepts = [{x:this.x,y:this.y+1},{x:this.x+1,y:this.y}]; break;}
+                    case 0: {accepts = [{x:this.x,y:this.y-1},{x:this.x+1,y:this.y}]; break;}
+                    case 1: {accepts = [{x:this.x,y:this.y+1},{x:this.x+1,y:this.y}]; break;}
+                    case 2: {accepts = [{x:this.x,y:this.y+1},{x:this.x-1,y:this.y}]; break;}
+                    case 3: {accepts = [{x:this.x,y:this.y-1},{x:this.x-1,y:this.y}]; break;}
                 }
                 break;
+            }
+            case 4:{
+                switch(this.state){
+                    case 0: {accepts = [{x:this.x+1,y:this.y}]; break;}
+                    case 1: {accepts = [{x:this.x,y:this.y+1}]; break;}
+                    case 2: {accepts = [{x:this.x-1,y:this.y}]; break;}
+                    case 3: {accepts = [{x:this.x,y:this.y-1}]; break;}
+                }
             }
         }
         this.accepts = accepts;
@@ -68,10 +76,12 @@ function Pipe(x,y,spriteNum,state){
 }
 
 Pipe.prototype.draw = function(ctx,fc,mY){
-    this.sprite.draw(ctx, this.x, this.y, this.rotation, fc, mY);
+    this.sprite.draw(ctx, this.x, this.y, this.rotation, fc, mY,this.filled);
 }
 Pipe.prototype.rotate = function(){
-    this.rotationLeft += 90;
+    if(this.filled==false){
+        this.rotationLeft += 90;
+    }
 }
 Pipe.prototype.update = function(){
     var newState = this.state;
@@ -87,21 +97,24 @@ Pipe.prototype.update = function(){
         this.state = newState;
         this.accept();
     }
+    if (this.filled)
+        return true;
+    else
+        return false;
 }
-Pipe.prototype.checkArround = function(){
-    var candidates = [];
+Pipe.prototype.fillArround = function(){
     for(var i in this.accepts){
         if(this.accepts[i].x>=0 && this.accepts[i].x<pipes.length){
             if(this.accepts[i].y>=0 && this.accepts[i].y<pipes[this.accepts[i].x].length){
-                if(pipes[this.accepts[i].x][this.accepts[i].y].check){
-                    candidates.push( this.accepts[i] );
+                if(pipes[this.accepts[i].x][this.accepts[i].y].check(this.x,this.y)){
+                    pipes[this.accepts[i].x][this.accepts[i].y].fill();
                 }
             }
         }
     }
-    return candidates;
 }
 Pipe.prototype.check = function(otherX, otherY){
+
     if(this.filled || otherX<0 || otherY<0){
         return false;
     }
@@ -111,4 +124,9 @@ Pipe.prototype.check = function(otherX, otherY){
         }
     }
     return false;
+}
+Pipe.prototype.fill = function(){
+    if(this.rotationLeft==0){
+        this.filled = true;
+    }
 }
